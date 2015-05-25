@@ -1,0 +1,14 @@
+387722c097abcb98d2e4b8955a5e6c89 *DESCRIPTION
+de4c40564cabbe0223ebd11827bb74bc *NAMESPACE
+48157da653898d1d0e408648d4903063 *R/selfea.R
+bc8cb1de355a7e68eceef74eed8910d6 *data/example_data1.rda
+96cf5e8ec37cee638f7c0193e292b0bb *data/example_data2.rda
+5aca2a4f247696e267568c13537a1644 *man/example_data.Rd
+6aa10ff0608bd3732b5450f338584d17 *man/example_data1.Rd
+e9908a586bfacce8b2f56269ecf3d5c2 *man/example_data2.Rd
+9cc864ea270bdeca378213f4314664ba *man/example_group.Rd
+697c62f8ae50534e2af96fccdf040c01 *man/get_statistics_from_dataFrame.Rd
+18a3898ac3f57b76900d67df70b536c0 *man/get_statistics_from_file.Rd
+28b73e7b140b0f2dcafc932e9307c378 *man/glm_anova.Rd
+8da2ec6b0ea4fa70acb965d05e32a2cd *man/selfea-package.Rd
+33e0e5a1fd496d73da35ad94cbf52469 *man/top_table.Rd
