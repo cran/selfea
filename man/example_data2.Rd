@@ -2,7 +2,7 @@
 \alias{example_data2}
 \docType{data}
 \title{
-Yeast lisate samples spiked with human proteins
+Gregori Data: Yeast lisate samples spiked with human proteins
 }
 \description{
 The spectral counts matrix has samples in the columns, and proteins in the rows.
@@ -17,11 +17,9 @@ data(example_data2)
 \references{
 Josep Gregori, Laura Villareal, Alex Sanchez, Jose Baselga, Josep Villanueva (2013). An Effect Size Filter Improves the Reproducibility in Spectral Counting-based Comparative Proteomics. Journal of Proteomics, 
 DOI \url{http://dx.doi.org/10.1016/j.jprot.2013.05.030}
-
-Laurent Gatto and Kathryn S. Lilley, MSnbase - an R/Bioconductor package for isobaric tagged mass spectrometry data visualization, processing and quantitation, Bioinformatics 28(2), 288-289 (2012).
 }
 
 \examples{
-data(example_data1)
+data(example_data2)
 }
 \keyword{datasets}

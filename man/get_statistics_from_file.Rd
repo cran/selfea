@@ -9,10 +9,10 @@ get_statistics_from_file(file_expr = "", file_group = "", padj = "fdr")
 \arguments{
 \item{file_expr}{a CSV type file, comma (,) seperated file format, that has unique "ID" at the first column and expression data for the corresponding ID.  Here is an short example.
    \tabular{l}{
-   ID,Y500U100_001,Y500U100_002,Y500U100_003,Y500U100_004,Y500U200_001,Y500U200_002 \cr
-   YKL060C,151,195,188,184,221,201 \cr
-   YDR155C,154,244,237,232,190,187 \cr
-   YOL086C,64,89,128,109,116,119 \cr
+   ID,Y500U100_001,Y500U100_002,Y500U200_001,Y500U200_002 \cr
+   YKL060C,151,195,221,201 \cr
+   YDR155C,154,244,190,187 \cr
+   YOL086C,64,89,116,119 \cr
    }}
 
 \item{file_group}{a CSV type file, comma (,) seperated file format, that consists of "Col_Name", column names of "file_expr" parameter, and "Group" information of the corresponding column name.
@@ -21,27 +21,36 @@ get_statistics_from_file(file_expr = "", file_group = "", padj = "fdr")
    Col_Name,Group \cr
    Y500U100_001,U100 \cr
    Y500U100_002,U100 \cr
-   Y500U100_003,U100 \cr
-   Y500U100_004,U100 \cr
    Y500U200_001,U200 \cr
    Y500U200_002,U200 \cr
    }}
 
 \item{padj}{Choose one of these c("holm", "hochberg", "hommel", "bonferroni", "BH", "BY", "fdr", "none").
-"fdr" is default option.}
+"fdr" is default option. The option is same to \code{\link[stats]{p.adjust}}.}
 }
 \value{
 A list that consists of the following items:
    \tabular{ll}{
-   $data_table \tab A data frame that consists of ID, GLM Negative Binomial P-value, Cohen's W, GLM Quasi-Poisson P-value, ANOVA with Normal P-value and Cohen's f. \cr
-   $min_rep \tab Common number of replicates in your group information.  Generally, it is the minimum number of replicates. \cr
+   $data_table \tab A data frame that have statistics for each IDs\cr
+   $min_rep \tab Common number of replicates in your group information. \cr
    $max_rep \tab Maximum number of replicates in your group information. \cr
    $nt \tab The number of total experiments in your expression profile. \cr
    $ng \tab The number of groups in your group information. \cr
+   $method_pvalue_adjustment \tab The selected method for p-value adjustment \cr
+   }
+   \tabular{ll}{
+   data_table's elements \tab  \cr
+   Cohens_W \tab Cohen's w \cr
+   Cohens_F \tab Cohen's f\cr
+   Cohens_F2 \tab Cohen's f2\cr
+   Max_FC \tab Maximum fold change among all the possible group pairs\cr
+   QP_Pval_adjusted \tab Adjusted p-value from GLM quasi-Poisson \cr
+   NB_Pval_adjusted \tab Adjusted p-value from GLM negative binomial \cr
+   Normal_Pval_adjusted \tab Adjusted p-value from Normal ANOVA \cr
    }
 }
 \description{
-A function "get_statistics_from_file" computes several statistics by reading csv files obtained from input arguments
+This function computes Cohen's f, f2 and w, adjusted p-value from GLM quasi-Poisson, negative binomial and Normal distribution.
 }
 \examples{
 library(selfea)
@@ -69,7 +78,7 @@ write.csv(df_group,"group.csv",row.names=FALSE)
 ## Get statistics
 list_result <- get_statistics_from_file("expression.csv","group.csv","fdr")
 
-## Get significant features (alpha >= 0.05 and power >= 0.84)
-significant_qpf <- top_table(list_result,pvalue=0.05,power_desired=0.84,method='QPF')
+## Get significant features (alpha >= 0.05 and power >= 0.90)
+significant_qpf <- top_table(list_result,pvalue=0.05,power_desired=0.90,method='QPF')
 }
 

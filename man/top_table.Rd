@@ -4,19 +4,19 @@
 \alias{top_table}
 \title{top_table}
 \usage{
-top_table(input_list, pvalue = 0.05, power_desired = 0.84, method = "QPF",
+top_table(input_list, pvalue = 0.05, power_desired = 0.9, method = "QPF",
   FC_threshold = 2)
 }
 \arguments{
-\item{input_list}{The list produced by 'get_statistics_from_file' or 'get_statistics_from_dataFrame' function.
+\item{input_list}{The list should be produced by 'get_statistics_from_file' or 'get_statistics_from_dataFrame' function.
 See \code{\link{get_statistics_from_file}} and \code{\link{get_statistics_from_dataFrame}} for more information.
 It consists of the following items:
 \tabular{ll}{
-    $data_table \tab A data frame that consists of ID, GLM Negative Binomial P-value, Cohen's W, GLM Quasi-Poisson P-value, ANOVA with Normal P-value and Cohen's f. \cr
-    $min_rep \tab Common number of replicates in your group information.  Generally, it is the minimum number of replicates. \cr
-    $max_rep \tab Maximum number of replicates in your group information. \cr
-    $nt \tab The number of total experiments in your expression profile. \cr
-    $ng \tab The number of groups in your group information. \cr
+$data_table \tab A data frame that have statistics for each IDs\cr
+$min_rep \tab Common number of replicates in your group information. \cr
+$max_rep \tab Maximum number of replicates in your group information. \cr
+$nt \tab The number of total experiments in your expression profile. \cr
+$ng \tab The number of groups in your group information. \cr
 }}
 
 \item{pvalue}{p-value should be ranged between 0 to 1.
@@ -25,37 +25,62 @@ default is 0.05.}
 \item{power_desired}{Give the statistical power you desired for output significant list}
 
 \item{method}{Choose statistics method you want to use for making significant list
-\tabular{lll}{
-1 \tab "QPF" \tab combination of Quasi-Poisson and Cohen's f. Default. \cr
-2 \tab "QPFC" \tab combination of Quasi-Poisson and Fold change. \cr
-3 \tab "NBW" \tab combination of Negative Binomial and Cohen's w. \cr
-4 \tab "NBFC" \tab combination of Negative Binomial and Fold change. \cr
-5 \tab "NORF" \tab combination of ANOVA with normal distribution and Cohen's f. \cr
-6 \tab "NORFC" \tab combination of ANOVA with normal distribution and Fold change. \cr
+\tabular{ll}{
+"QPF" \tab combination of Quasi-Poisson and Cohen's f. Default. \cr
+"QPF2" \tab combination of Quasi-Poisson and Cohen's f2. \cr
+"QPFC" \tab combination of Quasi-Poisson and Fold change. \cr
+"NBW" \tab combination of Negative Binomial and Cohen's w. \cr
+"NBF2" \tab combination of Negative Binomial and Cohen's f2. \cr
+"NBFC" \tab combination of Negative Binomial and Fold change. \cr
+"NORF" \tab combination of ANOVA with normal distribution and Cohen's f. \cr
+"NORFC" \tab combination of ANOVA with normal distribution and Fold change. \cr
 }}
 
 \item{FC_threshold}{Fold change you want to use. Default is 2.}
 }
 \value{
-A list containing the follow items.
+A list containing the follow items and a scatter plot that x-axis is effect size and y-axis is probability.
+Vertical line the plot is minimum effect size and horizontal line is maximum probability threshold.
+Red dots means insignificant, while blue dots are significant.
    \tabular{ll}{
-   top_table \tab a data frame that consists of ID, Cohen's W, Cohen's F, Max fold change, GLM Negative Binomial P-value, GLM Quasi-Poisson P-value and ANOVA with Normal P-value \cr
-   minimum_cohen_f \tab Minimum Cohen's f found in the top_table \cr
-   minimum_cohen_w \tab Minimum Cohen's w found in the top_table \cr
-   minimum_power \tab Minimum statistical power calculated from hypothsis tested for the top_table's entities \cr
+   top_table \tab a data frame that have calculated statistics for top table IDs \cr
+   minimum_effect_size \tab Minimum effect size threshold \cr
+   selected_effect_size_filter \tab The selected effect size filter \cr
+   minimum_power \tab Minimum statistical power in the top_table \cr
+   selected_model \tab The selected probability model for calculating p-value \cr
    alpha \tab Maximum adjusted p-value \cr
+   method_pvalue_adjustment \tab The selected method for p-value adjustment \cr
    num_group \tab The number of groups used for generating the top_table \cr
-   num_columns \tab The number of columns (samples or experiments) \cr
    common_replicates \tab The number of common replicates. \cr
-   minimum_FC \tab Minimum fold change that was used to generate top_table \cr
+   num_columns \tab The number of columns (samples or experiments) \cr
+   }
+   \tabular{ll}{
+   top_table's elements \tab  \cr
+   Cohens_W \tab Cohen's w \cr
+   Cohens_F \tab Cohen's f\cr
+   Cohens_F2 \tab Cohen's f2\cr
+   Max_FC \tab Maximum fold change among all the possible group pairs\cr
+   QP_Pval_adjusted \tab Adjusted p-value from GLM quasi-Poisson \cr
+   NB_Pval_adjusted \tab Adjusted p-value from GLM negative binomial \cr
+   Normal_Pval_adjusted \tab Adjusted p-value from Normal ANOVA \cr\cr
    }
 }
 \description{
 Get IDs that pass two filters, p-value and effect-size.  This top_table will make a significant list that is less than p-value and greater than effect-size.  Effect-size are calculated by obtained power level.
-   This function requires four parameters. ex) top_table(input_data,pvalue=0.05,power_desired=0.84,method='QPF')
+   This function requires four parameters. ex) top_table(input_data,pvalue=0.05,power_desired=0.90,method='QPF')
 }
 \examples{
 library(selfea)
+
+## Test selfea for single protein expression
+values <- c(6,8,10,29,26,22)
+groups <- c("U200","U200","U200","U600","U600","U600")
+experiments <- c("exp1","exp2","exp3","exp4","exp5","exp6")
+
+df_expr <- data.frame(ID="Protein_1",exp1=6,exp2=8,exp3=10,exp4=29,exp5=26,exp6=22)
+df_group <- data.frame(Col_Name=experiments,Group=groups)
+list_result <- get_statistics_from_dataFrame(df_expr,df_group)
+top_table(list_result)
 
 ## For this example we will import Gregori data
 ## Josep Gregori, Laura Villareal, Alex Sanchez, Jose Baselga, Josep Villanueva (2013).
@@ -76,7 +101,7 @@ df_group <- example_group
 ## Get statistics through 'get_statistics_from_dataFrame' function
 list_result <- get_statistics_from_dataFrame(df_contrast,df_group)
 
-## Get significant features (alpha >= 0.05 and power >= 0.84)
-significant_qpf <- top_table(list_result,pvalue=0.05,power_desired=0.84,method='QPF')
+## Get significant features (alpha >= 0.05 and power >= 0.90)
+significant_qpf <- top_table(list_result,pvalue=0.05,power_desired=0.90,method='QPF')
 }
 

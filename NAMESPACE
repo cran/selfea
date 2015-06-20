@@ -3,6 +3,8 @@
 export(get_statistics_from_dataFrame)
 export(get_statistics_from_file)
 export(top_table)
+export(ttest_cohens_d)
 import(MASS)
+import(ggplot2)
 import(plyr)
 import(pwr)

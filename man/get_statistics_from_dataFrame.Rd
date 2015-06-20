@@ -10,33 +10,30 @@ get_statistics_from_dataFrame(df_contrast, df_group, padj = "fdr")
 \item{df_contrast}{A data frame that consists of 'ID' column and expression profile (columns after 'ID' column).
    'ID' column should be unique. Column names after 'ID' column should be unique.
    Only positive numbers are allowed in expression data. Here is an example.
-\tabular{rrrrrrrrr}{
-  \tab ID \tab Y500U100_001 \tab Y500U100_002 \tab Y500U100_003 \tab Y500U100_004 \tab Y500U200_001 \tab Y500U200_002 \tab Y500U200_003 \cr
-  1 \tab YKL060C \tab 151 \tab 195 \tab 188 \tab 184 \tab 221 \tab 201 \tab 187 \cr
-  2 \tab YDR155C \tab 154 \tab 244 \tab 237 \tab 232 \tab 190 \tab 187 \tab 215 \cr
-  3 \tab YOL086C \tab  64 \tab 89 \tab 128 \tab 109 \tab 116 \tab 119 \tab 139 \cr
-  4 \tab YJR104C \tab 161 \tab 155 \tab 158 \tab 172 \tab 164 \tab 165 \tab 161 \cr
-  5 \tab YGR192C \tab 157 \tab 161 \tab 173 \tab 175 \tab 177 \tab 164 \tab 176 \cr
-  6 \tab YLR150W \tab 96 \tab 109 \tab 113 \tab 115 \tab 119 \tab 121 \tab 141 \cr
-  7 \tab YPL037C \tab 23 \tab 28 \tab 27 \tab 27 \tab 48 \tab 44 \tab 34 \cr
-  8 \tab YNL007C \tab 53 \tab 58 \tab 64 \tab 63 \tab 66 \tab 70 \tab 78 \cr
-  9 \tab YBR072W \tab 52 \tab 53 \tab 54 \tab 44 \tab 73 \tab 62 \tab 67 \cr
-  10 \tab YDR418W_1 \tab 76 \tab 53 \tab 62 \tab 74 \tab 63 \tab 65 \tab 67 \cr
+\tabular{rrrrr}{
+  ID \tab Y500U100_001 \tab Y500U100_002 \tab Y500U200_001 \tab Y500U200_002 \cr
+  YKL060C \tab 151 \tab 195 \tab 188 \tab 184 \cr
+  YDR155C \tab 154 \tab 244 \tab 237 \tab 232 \cr
+  YOL086C \tab  64 \tab 89 \tab 128 \tab 109 \cr
+  YJR104C \tab 161 \tab 155 \tab 158 \tab 172 \cr
+  YGR192C \tab 157 \tab 161 \tab 173 \tab 175 \cr
+  YLR150W \tab 96 \tab 109 \tab 113 \tab 115 \cr
+  YPL037C \tab 23 \tab 28 \tab 27 \tab 27 \cr
+  YNL007C \tab 53 \tab 58 \tab 64 \tab 63 \cr
+  YBR072W \tab 52 \tab 53 \tab 54 \tab 44 \cr
+  YDR418W_1 \tab 76 \tab 53 \tab 62 \tab 74 \cr
   }}
 
 \item{df_group}{A data frame that consists of 'Col_Name' and 'Group' columns
 This parameter is to match experiment groups to expression profiles of df_contrast.
 'Col_Name' should be corresponding to column names of expression profile of df_contrast.
 'Group' columns have experiment informaion of columns in expression profile of df_contrast.  Here is an example. See the example of df_contrast together.
-\tabular{rrr}{
-  \tab Col_Name \tab Group \cr
-1 \tab Y500U100_001 \tab U100 \cr
-2 \tab Y500U100_002 \tab U100 \cr
-3 \tab Y500U100_003 \tab U100 \cr
-4 \tab Y500U100_004 \tab U100 \cr
-5 \tab Y500U200_001 \tab U200 \cr
-6 \tab Y500U200_002 \tab U200 \cr
-7 \tab Y500U200_003 \tab U200 \cr
+\tabular{rr}{
+Col_Name \tab Group \cr
+Y500U100_001 \tab U100 \cr
+Y500U100_002 \tab U100 \cr
+Y500U200_001 \tab U200 \cr
+Y500U200_002 \tab U200 \cr
 }}
 
 \item{padj}{Choose one of these c("holm", "hochberg", "hommel", "bonferroni", "BH", "BY", "fdr", "none").
@@ -45,18 +42,39 @@ This parameter is to match experiment groups to expression profiles of df_contra
 \value{
 A list that consists of the following items:
    \tabular{ll}{
-   $data_table \tab A data frame that consists of ID, GLM Negative Binomial P-value, Cohen's W, GLM Quasi-Poisson P-value, ANOVA with Normal P-value and Cohen's f. \cr
-   $min_rep \tab Common number of replicates in your group information.  Generally, it is the minimum number of replicates. \cr
+   $data_table \tab A data frame that have statistics for each IDs\cr
+   $min_rep \tab Common number of replicates in your group information. \cr
    $max_rep \tab Maximum number of replicates in your group information. \cr
    $nt \tab The number of total experiments in your expression profile. \cr
    $ng \tab The number of groups in your group information. \cr
+   $method_pvalue_adjustment \tab The selected method for p-value adjustment \cr
+   }
+   \tabular{ll}{
+   data_table's elements \tab  \cr
+   Cohens_W \tab Cohen's w \cr
+   Cohens_F \tab Cohen's f\cr
+   Cohens_F2 \tab Cohen's f2\cr
+   Max_FC \tab Maximum fold change among all the possible group pairs\cr
+   QP_Pval_adjusted \tab Adjusted p-value from GLM quasi-Poisson \cr
+   NB_Pval_adjusted \tab Adjusted p-value from GLM negative binomial \cr
+   Normal_Pval_adjusted \tab Adjusted p-value from Normal ANOVA \cr
    }
 }
 \description{
-A function "get_statistics_from_dataFrame" computes several statistics by reading csv files obtained from input arguments
+This function computes Cohen's f, f2 and w, adjusted p-value from GLM quasi-Poisson, negative binomial and Normal distribution.
 }
 \examples{
 library(selfea)
+
+## Test selfea for single protein expression
+values <- c(6,8,10,29,26,22)
+groups <- c("U200","U200","U200","U600","U600","U600")
+experiments <- c("exp1","exp2","exp3","exp4","exp5","exp6")
+
+df_expr <- data.frame(ID="Protein_1",exp1=6,exp2=8,exp3=10,exp4=29,exp5=26,exp6=22)
+df_group <- data.frame(Col_Name=experiments,Group=groups)
+list_result <- get_statistics_from_dataFrame(df_expr,df_group)
+top_table(list_result)
 
 ## For this example we will import Gregori data
 ## Josep Gregori, Laura Villareal, Alex Sanchez, Jose Baselga, Josep Villanueva (2013).
@@ -77,7 +95,7 @@ df_group <- example_group
 ## Get statistics through 'get_statistics_from_dataFrame' function
 list_result <- get_statistics_from_dataFrame(df_contrast,df_group)
 
-## Get significant features (alpha >= 0.05 and power >= 0.84)
-significant_qpf <- top_table(list_result,pvalue=0.05,power_desired=0.84,method='QPF')
+## Get significant features (alpha >= 0.05 and power >= 0.90)
+significant_qpf <- top_table(list_result,pvalue=0.05,power_desired=0.90,method='QPF')
 }
 
